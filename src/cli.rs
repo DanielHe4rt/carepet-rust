@@ -63,7 +63,6 @@ pub struct StressConfig {
 #[derive(Args)]
 pub struct ServerConfig {
     #[arg(short, long, default_value = "carepet")]
-
     pub keyspace: String,
 
     #[arg(long, default_value = "localhost:9042")]
