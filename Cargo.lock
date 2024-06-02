@@ -449,7 +449,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "care-pet"
+name = "care_pet"
 version = "0.1.0"
 dependencies = [
  "actix-web",
@@ -491,9 +491,9 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "charybdis"
-version = "0.6.0"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "566bdbe08cd152d4766d842d58e23b9b35c72e34b0eaff7965720e9c638a63f1"
+checksum = "2c158dc64b9520c08c19d48c44060a7f12ceb138362969bbf2e6f81c5f6bf35a"
 dependencies = [
  "bigdecimal",
  "charybdis_macros",
@@ -509,9 +509,9 @@ dependencies = [
 
 [[package]]
 name = "charybdis_macros"
-version = "0.6.0"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "40f18f234242a83b9ce0b063441e810744d8bdeed0d657f0f4db268e10c0eaa0"
+checksum = "582283054502fbd0494fa3a45036c6467dfb488bc302fb8dd36e4428b7a0905d"
 dependencies = [
  "charybdis_parser",
  "darling",
@@ -522,9 +522,9 @@ dependencies = [
 
 [[package]]
 name = "charybdis_parser"
-version = "0.6.0"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "10c07a2b6a2b9c90f8caab42bec92f981187044477d65aaeea90593a21ebf129"
+checksum = "ea3fb35691271b77c7517776c7dc7712184ebc7d31b458291aa5f0adc989b813"
 dependencies = [
  "colored",
  "darling",

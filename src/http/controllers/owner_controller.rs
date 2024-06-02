@@ -1,8 +1,8 @@
 use actix_web::{get, HttpResponse, Responder};
 use actix_web::web;
 use uuid::Uuid;
+use crate::http::AppState;
 
-use crate::AppState;
 use crate::http::controllers::SomeError;
 use crate::repositories::owner_repository::OwnerRepository;
 

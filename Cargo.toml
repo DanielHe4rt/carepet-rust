@@ -1,15 +1,15 @@
 [package]
-name = "care-pet"
+name = "care_pet"
 version = "0.1.0"
 edition = "2021"
-default-run = "care-pet"
+default-run = "care_pet"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 actix-web = "4.6.0"
 anyhow = "1.0"
-charybdis = "0.6.0"
+charybdis = "0.6.1"
 chrono = "0.4"
 clap = { version = "4.5.4", features = ["derive"] }
 fake = "2.9.2"
@@ -27,17 +27,5 @@ tokio = {version = "1.1", features = ["full"]}
 uuid = {version = "1.8.0", features = ["v4", "serde"]}
 
 [[bin]]
-name = "sensor"
-path = "src/stressors/sensor/mod.rs"
-
-[[bin]]
-name = "migrate"
-path = "src/database/migrate/mod.rs"
-
-[[bin]]
-name = "loadtest"
-path = "src/stressors/stress/mod.rs"
-
-[[bin]]
-name = "care-pet"
+name = "care_pet"
 path = "src/main.rs"

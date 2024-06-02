@@ -2,7 +2,7 @@ use actix_web::{get, HttpResponse, Responder};
 use actix_web::web;
 use uuid::Uuid;
 
-use crate::AppState;
+use crate::http::AppState;
 use crate::http::controllers::SomeError;
 use crate::repositories::pet_repository::PetRepository;
 

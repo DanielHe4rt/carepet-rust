@@ -1,30 +1,39 @@
-#![allow(warnings)]
+use std::sync::Arc;
 
-use clap::Parser;
-use log::*;
 use anyhow::Result;
+use clap::Parser;
+use scylla::Session;
 
-use care_pet::cli::{Cli, Commands};
-use care_pet::database::migrate::migrate;
-use care_pet::http::start_server;
-use care_pet::stressors::sensor::sensor_stress;
-use care_pet::stressors::stress::application_stress;
+use cli::{Cli, Commands};
+use database::migrate::migrate;
+use http::start_server;
+use stressors::sensor::sensor_stress;
+use stressors::stress::application_stress;
 
+mod database;
+mod log;
+mod model;
+mod repositories;
+mod cli;
+mod http;
+
+
+mod stressors;
 
 #[actix_web::main]
 async fn main() -> Result<()> {
     let cli = Cli::parse();
 
-    care_pet::log::init();
+    log::init();
 
     match &cli.command {
         Commands::Server(args)
-            => start_server(args).await,
+        => start_server(args).await,
         Commands::Migrate { config, drop_keyspace }
-            => migrate(config, drop_keyspace.clone()).await,
+        => migrate(config, drop_keyspace.clone()).await,
         Commands::Sensor { config, measure, buffer_interval }
-            => sensor_stress(config, measure, buffer_interval).await,
+        => sensor_stress(config, measure, buffer_interval).await,
         Commands::Stress { config, stress }
-            => application_stress(config, stress).await,
+        => application_stress(config, stress).await,
     }
 }

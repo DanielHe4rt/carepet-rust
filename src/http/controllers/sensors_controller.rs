@@ -2,7 +2,7 @@ use actix_web::{get, HttpResponse, Responder, web};
 use serde::Deserialize;
 use uuid::Uuid;
 
-use crate::AppState;
+use crate::http::AppState;
 use crate::http::controllers::SomeError;
 use crate::http::controllers::SomeError::InternalError;
 use crate::repositories::sensor_repository::SensorRepository;

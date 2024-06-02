@@ -63,6 +63,7 @@ pub struct StressConfig {
 #[derive(Args)]
 pub struct ServerConfig {
     #[arg(short, long, default_value = "carepet")]
+
     pub keyspace: String,
 
     #[arg(long, default_value = "localhost:9042")]
@@ -76,6 +77,18 @@ pub struct ServerConfig {
 
     #[arg(short, long, default_value = "2", value_parser = parse_duration)]
     pub timeout: Duration,
+}
+
+impl Default for ServerConfig {
+    fn default() -> Self {
+        Self {
+            keyspace: "carepet".to_string(),
+            hostnames: vec![String::from("localhost:9042")],
+            username: "".to_string(),
+            password: "".to_string(),
+            timeout: Duration::from_secs(5),
+        }
+    }
 }
 
 fn parse_duration(arg: &str) -> Result<Duration, std::num::ParseIntError> {

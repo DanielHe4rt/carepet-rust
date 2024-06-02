@@ -1,0 +1,66 @@
+services:
+  scylla-node1: &node-main
+    image: scylladb/scylla:5.4.6
+    container_name: scylla-node1
+    restart: on-failure
+    environment:
+      - 'SCYLLA_JMX_ADDR=-ja 0.0.0.0'
+      - 'SCYLLA_JMX_REMOTE=-r'
+    expose:
+      - 7199
+    command:
+      [
+        '--smp=1',
+        '--memory=1G',
+        '--overprovisioned=1',
+        '--api-address=0.0.0.0',
+        '--seeds=scylla-node1',
+      ]
+    ports:
+      - 9042:9042
+    networks:
+      scylla-dc:
+        ipv4_address: 10.10.7.2
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          "curl -s -X GET --header 'Accept: application/json' 'http://localhost:10000/storage_service/native_transport'",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  scylla-node2: &node-replica
+    <<: *node-main
+    container_name: scylla-node2
+    ports:
+      - 9043:9042
+    networks:
+      scylla-dc:
+        ipv4_address: 10.10.7.3
+    depends_on:
+      scylla-node1:
+        condition: service_healthy
+
+  scylla-node3:
+    <<: *node-replica
+    container_name: scylla-node3
+    ports:
+      - 9044:9042
+    networks:
+      scylla-dc:
+        ipv4_address: 10.10.7.4
+    depends_on:
+      scylla-node1:
+        condition: service_healthy
+networks:
+  scylla-dc:
+    name: scylla-dc
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.7.0/24
+          gateway: 10.10.7.1
+    driver_opts:
+      com.docker.network.bridge.name: scylla-dc

@@ -3,10 +3,17 @@ use std::sync::Arc;
 use actix_web::HttpServer;
 use actix_web::web::Data;
 
-use crate::{AppState, database};
+use crate::{database};
 use crate::cli::ServerConfig;
 use anyhow::Result;
+use scylla::Session;
+
 pub mod controllers;
+
+
+pub struct AppState {
+    pub session: Arc<Session>,
+}
 
 pub async fn start_server(args: &ServerConfig) -> Result<()> {
 

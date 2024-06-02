@@ -1,8 +1,10 @@
 use std::sync::Arc;
-use log::{error, info};
-use crate::cli::{ServerConfig, StressConfig};
+
 use anyhow::Result;
+use log::{error, info};
 use rlimit::increase_nofile_limit;
+
+use crate::cli::{ServerConfig, StressConfig};
 use crate::database::new_session_with_keyspace;
 use crate::repositories::Repositories;
 
