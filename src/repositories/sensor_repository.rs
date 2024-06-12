@@ -24,10 +24,13 @@ const CREATE_MEASURE_QUERY: &str = r"INSERT INTO measurements (sensor_id, ts, va
 
 impl SensorRepository {
     pub async fn new(session: Arc<Session>) -> Self {
+        let insert_sensor_statement = session.prepare(CREATE_SENSOR_QUERY).await?;
+        let insert_measure_statement = session.prepare(CREATE_MEASURE_QUERY).await?;
+
         Self {
             session,
-            insert_sensor_statement: session.prepare(CREATE_SENSOR_QUERY).await?,
-            insert_measure_statement: session.prepare(CREATE_MEASURE_QUERY).await?
+            insert_sensor_statement,
+            insert_measure_statement
         }
     }
 
