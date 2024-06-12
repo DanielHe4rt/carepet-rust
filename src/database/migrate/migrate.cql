@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS carepet.measurements
     ts    TIMESTAMP,
     value FLOAT,
     PRIMARY KEY (sensor_id, ts)
-) WITH compaction = { 'class' : 'TimeWindowCompactionStrategy' };
+) WITH CLUSTERING ORDER BY (ts DESC) AND compaction = { 'class' : 'TimeWindowCompactionStrategy' };
 
 CREATE TABLE IF NOT EXISTS carepet.sensors_avg
 (

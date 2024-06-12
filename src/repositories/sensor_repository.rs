@@ -11,26 +11,32 @@ use crate::model::sensors::sensor::Sensor;
 use crate::model::sensors::sensor_average::SensorAvg;
 use crate::model::sensors::sensor_measure::Measure;
 
-pub struct SensorRepository {
-    session: Arc<Session>,
-    insert_sensor_statement: PreparedStatement,
-    insert_measure_statement: PreparedStatement,
-}
-
 
 const CREATE_SENSOR_QUERY: &str = r"INSERT INTO sensors (pet_id, sensor_id, type) VALUES (?, ?, ?)";
 
 const CREATE_MEASURE_QUERY: &str = r"INSERT INTO measurements (sensor_id, ts, value) VALUES (?, ?, ?)";
 
+const SELECT_SENSOR_MEASURE_QUERY: &str = r"SELECT sensor_id, ts, value FROM measurements WHERE sensor_id = ? LIMIT 5";
+
+pub struct SensorRepository {
+    session: Arc<Session>,
+    insert_sensor_statement: PreparedStatement,
+    insert_measure_statement: PreparedStatement,
+    select_sensor_measure_statement: PreparedStatement,
+
+}
+
 impl SensorRepository {
     pub async fn new(session: Arc<Session>) -> Self {
         let insert_sensor_statement = session.prepare(CREATE_SENSOR_QUERY).await.unwrap();
         let insert_measure_statement = session.prepare(CREATE_MEASURE_QUERY).await.unwrap();
+        let select_sensor_measure_statement = session.prepare(SELECT_SENSOR_MEASURE_QUERY).await.unwrap();
 
         Self {
             session,
             insert_sensor_statement,
-            insert_measure_statement
+            insert_measure_statement,
+            select_sensor_measure_statement
         }
     }
 
@@ -65,6 +71,17 @@ impl SensorRepository {
         }
 
         Ok(sensors)
+    }
+
+    pub async fn list_sensor_data(&self, id: Uuid) -> Result<Vec<Measure>> {
+        let result = self.session.execute(&self.select_sensor_measure_statement, (id, )).await?;
+
+        let values = result.rows_typed::<Measure>()?.collect::<Result<Vec<_>, _>>()?;
+        if values.is_empty() {
+            return Err(anyhow!("Sensor data not found"));
+        }
+
+        Ok(values)
     }
 
     pub async fn list_pet_sensor_data_by_range(&self, id: Uuid, from: &str, to: &str) -> Result<Vec<Measure>> {

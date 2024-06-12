@@ -39,7 +39,7 @@ pub async fn application_stress(
             let sensors = sensors.clone();
             let repositories = Arc::clone(&repositories);
             tokio::spawn(async move {
-                workers::start_random_worker(repositories, i, sensors).await;
+                workers::start_random_worker(repositories, i, sensors).await.unwrap();
             });
         }
 

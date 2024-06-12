@@ -19,8 +19,7 @@ services:
     ports:
       - 9042:9042
     networks:
-      scylla-dc:
-        ipv4_address: 10.10.7.2
+      ws-scylla:
     healthcheck:
       test: ['CMD-SHELL', 'cqlsh -e "SHOW VERSION" || exit 1']
       interval: 30s
@@ -33,8 +32,7 @@ services:
     ports:
       - 9043:9042
     networks:
-      scylla-dc:
-        ipv4_address: 10.10.7.3
+      ws-scylla:
     depends_on:
       carepet-node1:
         condition: service_healthy
@@ -45,18 +43,17 @@ services:
     ports:
       - 9044:9042
     networks:
-      scylla-dc:
-        ipv4_address: 10.10.7.4
+      ws-scylla:
     depends_on:
       carepet-node1:
         condition: service_healthy
 networks:
-  scylla-ws:
-    name: scylla-dc
+  ws-scylla:
+    name: ws-scylla
     driver: bridge
     ipam:
       config:
         - subnet: 10.10.7.0/24
           gateway: 10.10.7.1
     driver_opts:
-      com.docker.network.bridge.name: scylla-dc
+      com.docker.network.bridge.name: ws-scylla

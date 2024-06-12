@@ -40,7 +40,8 @@ pub async fn start_pets_worker(
 }
 
 
-pub async fn start_random_worker (repositories: Arc<Repositories>, id: usize, sensors: Arc<HashMap<Uuid, Vec<Sensor>>>) {
+pub async fn start_random_worker (repositories: Arc<Repositories>, id: usize, sensors: Arc<HashMap<Uuid, Vec<Sensor>>>)
+-> Result<()>{
     debug!("worker # {} ready", id);
 
     let prefix = format!("#{}", id);
@@ -50,7 +51,9 @@ pub async fn start_random_worker (repositories: Arc<Repositories>, id: usize, se
         for sensors in sensors.values() {
             for sensor in sensors {
                 let measure = Measure::new_from_sensor(sensor);
-                repositories.sensor.create_measure(measure.clone()).await.unwrap();
+                repositories.sensor.create_measure(measure.clone()).await?;
+
+                repositories.sensor.list_sensor_data(sensor.sensor_id).await?;
 
                 let ts = Instant::now();
                 trace!("worker # {} insert {:?}", id, measure.sensor_id);
