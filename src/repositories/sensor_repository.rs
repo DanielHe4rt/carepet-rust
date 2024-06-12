@@ -27,7 +27,7 @@ impl SensorRepository {
         Self {
             session,
             insert_sensor_statement: session.prepare(CREATE_SENSOR_QUERY).await?,
-            insert_measure_statement: session.prepare(CREATE_MEASURE_QUERY).unwrap()
+            insert_measure_statement: session.prepare(CREATE_MEASURE_QUERY).await?
         }
     }
 
