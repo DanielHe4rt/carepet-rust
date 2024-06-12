@@ -51,7 +51,7 @@ services:
       carepet-node1:
         condition: service_healthy
 networks:
-  scylla-dc:
+  scylla-ws:
     name: scylla-dc
     driver: bridge
     ipam:

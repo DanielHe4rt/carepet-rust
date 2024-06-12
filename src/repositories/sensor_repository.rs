@@ -3,6 +3,7 @@ use std::sync::Arc;
 
 use anyhow::{anyhow, Result};
 use chrono::{DateTime, NaiveDate, Utc};
+use scylla::prepared_statement::PreparedStatement;
 use scylla::Session;
 use uuid::Uuid;
 
@@ -12,29 +13,38 @@ use crate::model::sensors::sensor_measure::Measure;
 
 pub struct SensorRepository {
     session: Arc<Session>,
+    insert_sensor_statement: PreparedStatement,
+    insert_measure_statement: PreparedStatement,
 }
+
+
+const CREATE_SENSOR_QUERY: &str = r"INSERT INTO sensors (pet_id, sensor_id, type) VALUES (?, ?, ?)";
+
+const CREATE_MEASURE_QUERY: &str = r"INSERT INTO measurements (sensor_id, ts, value) VALUES (?, ?, ?)";
 
 impl SensorRepository {
     pub async fn new(session: Arc<Session>) -> Self {
-        Self { session }
+        Self {
+            session,
+            insert_sensor_statement: session.prepare(CREATE_SENSOR_QUERY).await?,
+            insert_measure_statement: session.prepare(CREATE_MEASURE_QUERY).unwrap()
+        }
     }
 
     pub async fn create(&self, sensor: Sensor) -> Result<()> {
-        let query = "INSERT INTO sensors (pet_id, sensor_id, type) VALUES (?, ?, ?)";
-        let prepared = self.session.prepare(query).await?;
-
-        self.session
-            .execute(&prepared, (sensor.pet_id, sensor.sensor_id, sensor.sensor_type.as_str()))
+        self
+            .session
+            .execute(&self.insert_sensor_statement, (sensor.pet_id, sensor.sensor_id, sensor.sensor_type.as_str()))
             .await?;
 
         Ok(())
     }
 
     pub async fn create_measure(&self, measure: Measure) -> Result<()> {
-        let query = "INSERT INTO measurements (sensor_id, ts, value) VALUES (?, ?, ?)";
-        let prepared_query = self.session.prepare(query).await?;
-
-        self.session.execute(&prepared_query, (measure.sensor_id, measure.ts, measure.value)).await?;
+        self
+            .session
+            .execute(&self.insert_measure_statement, (measure.sensor_id, measure.ts, measure.value))
+            .await?;
         Ok(())
     }
 
