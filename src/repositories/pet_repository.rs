@@ -6,7 +6,7 @@ use scylla::{prepared_statement::PreparedStatement, Session};
 
 use crate::model::pet::Pet;
 
-const INSERT_PET_QUERY: &str = "INSERT INTO pets (owner_id,pet_id) VALUES (?, ?)";
+const INSERT_PET_QUERY: &str = "INSERT INTO pets (owner_id, pet_id) VALUES (?, ?)";
 
 const LIST_PET_QUERY: &str = r"
     SELECT
@@ -43,7 +43,7 @@ impl PetRepository {
         Self {
             session,
             insert_pet_query,
-            list_pet_query
+            list_pet_query,
         }
     }
 
@@ -56,7 +56,6 @@ impl PetRepository {
     }
 
     pub async fn list_by_owner_id(&mut self, id: Uuid, per_page: i32) -> Result<Vec<Pet>> {
-
         if per_page != DEFAULT_PAGE_SIZE {
             self.list_pet_query.set_page_size(per_page);
         }
