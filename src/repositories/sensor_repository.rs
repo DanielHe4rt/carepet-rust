@@ -16,21 +16,26 @@ const CREATE_SENSOR_QUERY: &str = r"INSERT INTO sensors (pet_id, sensor_id, type
 
 const CREATE_MEASURE_QUERY: &str = r"INSERT INTO measurements (sensor_id, ts, value) VALUES (?, ?, ?)";
 
-const SELECT_SENSOR_MEASURE_QUERY: &str = r"SELECT sensor_id, ts, value FROM measurements WHERE sensor_id = ? LIMIT 5";
+const SELECT_SENSOR_MEASURE_QUERY: &str = r"SELECT sensor_id, ts, value FROM measurements WHERE sensor_id = ?";
 
 pub struct SensorRepository {
     session: Arc<Session>,
     insert_sensor_statement: PreparedStatement,
     insert_measure_statement: PreparedStatement,
     select_sensor_measure_statement: PreparedStatement,
-
 }
 
 impl SensorRepository {
     pub async fn new(session: Arc<Session>) -> Self {
-        let insert_sensor_statement = session.prepare(CREATE_SENSOR_QUERY).await.unwrap();
-        let insert_measure_statement = session.prepare(CREATE_MEASURE_QUERY).await.unwrap();
-        let select_sensor_measure_statement = session.prepare(SELECT_SENSOR_MEASURE_QUERY).await.unwrap();
+        let insert_sensor_statement =
+            session.prepare(CREATE_SENSOR_QUERY).await.unwrap();
+
+        let insert_measure_statement =
+            session.prepare(CREATE_MEASURE_QUERY).await.unwrap();
+
+        let mut select_sensor_measure_statement =
+            session.prepare(SELECT_SENSOR_MEASURE_QUERY).await.unwrap();
+        select_sensor_measure_statement.set_page_size(5);
 
         Self {
             session,

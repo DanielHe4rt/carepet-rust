@@ -74,7 +74,4 @@ impl SensorType {
         }
     }
 
-    pub const fn len() -> usize {
-        4
-    }
 }

@@ -10,8 +10,8 @@ services:
       - 7199
     command:
       [
-        '--smp=1',
-        '--memory=1G',
+        '--smp=2',
+        '--memory=2G',
         '--overprovisioned=1',
         '--api-address=0.0.0.0',
         '--seeds=carepet-node1',

@@ -13,7 +13,7 @@ pub async fn find_pets_by_owner_id(
 ) -> actix_web::Result<impl Responder, SomeError> {
 
     let owner_id = owner_id.unwrap().into_inner();
-    let pet_repository = PetRepository::new(data.session.clone()).await;
+    let mut pet_repository = PetRepository::new(data.session.clone()).await;
 
     let result = pet_repository.list_by_owner_id(owner_id, 10).await;
 
